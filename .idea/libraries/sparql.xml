@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="sparql" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/sparql/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/sparql/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/sparql/lib" />
+      <root url="file://$PROJECT_DIR$/deps/sparql/src" />
+      <root url="file://$PROJECT_DIR$/deps/sparql/priv" />
+    </SOURCES>
+  </library>
+</component>
