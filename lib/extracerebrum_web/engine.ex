@@ -1,8 +1,9 @@
 defmodule Engine do
   @moduledoc false
-  @endpoint "http://vps300982.ovh.net:9999/blazegraph/sparql"
+  @endpoint "http://51.38.224.112:65001/blazegraph/sparql"
 
   def query(queryString) do
+
     queryString
       |> SPARQL.Client.query(@endpoint)
   end
@@ -11,6 +12,7 @@ defmodule Engine do
     """
     prefix bds: <http://www.bigdata.com/rdf/search#>
     select ?s ?p ?o { ?o bds:search "#{queryString}*" . ?s ?p ?o . }
+    LIMIT 5
     """
     |> SPARQL.Client.query(@endpoint)
   end
@@ -19,6 +21,7 @@ defmodule Engine do
     """
     prefix bds: <http://www.bigdata.com/rdf/search#>
     select ?s ?p ?o { ?o bds:search "#{queryString}*" . ?s ?p ?o . }
+    LIMIT 5
     """
     |> SPARQL.Client.query(@endpoint)
   end
@@ -27,6 +30,7 @@ defmodule Engine do
     """
     prefix bds: <http://www.bigdata.com/rdf/search#>
     select ?s ?p ?o { ?o bds:search "#{queryString}*" . ?s ?p ?o . }
+    LIMIT 5
     """
     |> SPARQL.Client.query(@endpoint)
   end
@@ -35,6 +39,7 @@ defmodule Engine do
     """
     prefix bds: <http://www.bigdata.com/rdf/search#>
     select ?s ?p ?o { ?o bds:search "#{queryString}*" . ?s ?p ?o . }
+    LIMIT 5
     """
     |> SPARQL.Client.query(@endpoint)
   end
