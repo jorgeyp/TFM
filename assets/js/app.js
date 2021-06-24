@@ -31,3 +31,19 @@ liveSocket.connect()
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
+
+// XBR
+
+let input = document.querySelector('.xbr-input');
+let root  = document.documentElement.style;
+
+/* on input event auto resize the field */
+input.addEventListener('input', function() {
+    root.setProperty('--size', this.value.length )
+});
+
+/* resize the field if it is pre-populated */
+document.addEventListener("DOMContentLoaded", function() {
+    root.setProperty('--size', input.value.length )
+});
+

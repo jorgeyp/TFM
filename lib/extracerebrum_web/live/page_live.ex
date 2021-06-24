@@ -5,7 +5,7 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, results: [], sub: "", pred: "", obj: "")}
+    {:ok, assign(socket, results: [], sub: "", pred: "", obj: "", active_entity_index: 0)}
   end
 
   @impl true
@@ -14,6 +14,23 @@ defmodule ExtracerebrumWeb.PageLive do
 
     Engine.record(triple["s"])
 
+  end
+
+  @impl true
+  def handle_event("show_property", _value, socket) do
+    IO.puts("SHOW PROPERTY")
+
+    {:noreply, assign(socket, results: [], active_entity_index: 1)}
+  end
+
+  @impl true
+  def handle_event("keyup", %{"key" => "Enter"}, socket) do
+    {:noreply, assign(socket, results: [], active_entity_index: next_entity_index(socket.assigns.active_entity_index))}
+  end
+
+  def handle_event("keyup", _key, socket) do
+    IO.puts("KEY")
+    {:noreply, socket}
   end
 
   def handle_sub(sub, socket) do
@@ -108,5 +125,10 @@ defmodule ExtracerebrumWeb.PageLive do
         String.starts_with?(app, query) and not List.starts_with?(desc, ~c"ERTS"),
         into: %{},
         do: {app, vsn}
+  end
+
+  defp next_entity_index(active_entity_index) when active_entity_index < 3 do
+    IO.inspect(active_entity_index)
+    active_entity_index + 1
   end
 end
