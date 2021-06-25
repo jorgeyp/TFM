@@ -12,8 +12,8 @@ defmodule ExtracerebrumWeb.PageLive do
   def handle_event("record", %{"triple" => triple}, socket) do
     IO.puts("handle record")
 
-    Engine.record(triple["s"])
-
+#    Engine.record(triple["s"])
+    {:noreply, socket}
   end
 
   @impl true
@@ -25,7 +25,8 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def handle_event("keyup", %{"key" => "Enter"}, socket) do
-    {:noreply, assign(socket, results: [], active_entity_index: next_entity_index(socket.assigns.active_entity_index))}
+    IO.inspect(socket)
+    {:noreply, assign(socket, results: [], active_entity_index: next_entity_index(socket.assigns))}
   end
 
   def handle_event("keyup", _key, socket) do
@@ -34,18 +35,37 @@ defmodule ExtracerebrumWeb.PageLive do
   end
 
   def handle_sub(sub, socket) do
-    IO.puts(sub)
-    case Engine.search(sub) do
-      {:ok, %Query.Result{} = rdfResults} ->
-        results = rdfResults
-                  |> Query.Result.get(:o)
-                  |> Enum.map(fn(s) -> RDF.Term.value(s) end)
+      IO.puts(sub)
+      case Engine.search(sub) do
+        {:ok, %Query.Result{} = queryResult} ->
+          results = queryResult.results
+          |> Enum.map(fn result ->
+            %{
+              :label => result["o"] |> RDF.Term.value,
+              :id => result["s"] |> RDF.Term.value
+            }
+          end)
+          IO.inspect(results)
+          {:noreply, assign(socket, results: results, sub: sub)}
 
-        {:noreply, assign(socket, results: results, sub: sub)}
-      {:error, reason} ->
-        {:noreply, assign(socket, results: [])}
+        {:error, reason} ->
+          {:noreply, assign(socket, results: [])}
+      end
     end
-  end
+
+#  def handle_sub(sub, socket) do
+#    IO.puts(sub)
+#    case Engine.search(sub) do
+#      {:ok, %Query.Result{} = rdfResults} ->
+#        results = rdfResults
+#                  |> Query.Result.get(:o)
+#                  |> Enum.map(fn(s) -> RDF.Term.value(s) end)
+#        {:noreply, assign(socket, results: results, sub: sub)}
+#
+#      {:error, reason} ->
+#        {:noreply, assign(socket, results: [])}
+#    end
+#  end
 
   def handle_pred(pred, socket) do
     IO.puts(pred)
@@ -127,8 +147,10 @@ defmodule ExtracerebrumWeb.PageLive do
         do: {app, vsn}
   end
 
-  defp next_entity_index(active_entity_index) when active_entity_index < 3 do
-    IO.inspect(active_entity_index)
-    active_entity_index + 1
+  defp next_entity_index(assigns) when assigns.active_entity_index < 3 do
+    cond do
+      String.length(assigns.sub) > 0  && String.length(assigns.pred) == 0 -> 1
+      String.length(assigns.pred) > 0 -> 2
+    end
   end
 end

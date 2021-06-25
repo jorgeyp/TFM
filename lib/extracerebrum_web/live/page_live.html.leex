@@ -7,46 +7,55 @@
 
     <%= f = form_for :triple, "#", phx_submit: :record, phx_change: :suggest, class: "row xbr-bar"%>
 
-        <!--div class="col">
-            <input type="text" name="triple[s]" value="<%= @sub %>" placeholder="" list="results-s" autocomplete="off"/>
-            <datalist id="results-s">
-                <%= for result <- @results do %>
-                <option value="<%= result %>"><%= result %></option>
-                <% end %>
-            </datalist>
-        </div-->
+        <div class="">
+            <input type="text" name="triple[s]" value="<%= @sub %>" placeholder="Type here to search items"  autocomplete="off"
+                   phx-keyup="keyup" class="xbr-suggestions xbr-input <%= if String.length(@sub) > 0, do: "xbr-entity xbr-entity-s", else: "xbr-placeholder-s" %>"/>
 
-        <div class="col">
-            <input type="text" name="triple[s]" value="<%= @sub %>" placeholder="Type here to search items" list="results-s" autocomplete="off"
-                   phx-keyup="keyup" class="xbr-input <%= if String.length(@sub) > 0, do: "xbr-entity xbr-entity-s", else: "xbr-placeholder-s" %>"/>
-            <datalist id="results-s">
-                <%= for result <- @results do %>
-                <option value="<%= result %>"><%= result %></option>
-                <% end %>
-            </datalist>
+            <%= if length(@results) > 0 do %>
+            <div class="xbr-suggestions-content">
+                <ul id="results-s">
+                    <%= for result <- @results do %>
+                    <li><a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a></li>
+                    <% end %>
+                </ul>
+            </div>
+            <% end %>
+
         </div>
 
         <%= if @active_entity_index > 0 do %>
-        <div class="col">
-            <input type="text" name="triple[p]" value="<%= @pred %>" placeholder="Type here to search statements" list="results-p" autocomplete="off"
+        <div class="">
+            <input type="text" name="triple[p]" value="<%= @pred %>" placeholder="Type here to search properties" autocomplete="off"
                    phx-keyup="keyup" class="xbr-input <%= if String.length(@pred) > 0, do: "xbr-entity xbr-entity-p", else: "xbr-placeholder-p" %>"/>
-            <datalist id="results-p">
-                <%= for result <- @results do %>
-                <option value="<%= result %>"><%= result %></option>
-                <% end %>
-            </datalist>
+
+            <%= if length(@results) > 0 do %>
+            <div class="xbr-suggestions-content">
+                <ul id="results-s">
+                    <%= for result <- @results do %>
+                    <li><a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a></li>
+                    <% end %>
+                </ul>
+            </div>
+            <% end %>
+
         </div>
         <% end %>
 
         <%= if @active_entity_index > 1 do %>
-        <div class="col">
-            <input type="text" name="triple[o]" value="<%= @obj %>" placeholder="" list="results-o" autocomplete="off"
+        <div class="">
+            <input type="text" name="triple[o]" value="<%= @obj %>" placeholder="Type here to search items" autocomplete="off"
                    phx-keyup="keyup" class="xbr-input <%= if String.length(@obj) > 0, do: "xbr-entity xbr-entity-o", else: "xbr-placeholder-o" %>"/>
-            <datalist id="results-o">
-                <%= for result <- @results do %>
-                <option value="<%= result %>"><%= result %></option>
-                <% end %>
-            </datalist>
+
+            <%= if length(@results) > 0 do %>
+            <div class="xbr-suggestions-content">
+                <ul id="results-s">
+                    <%= for result <- @results do %>
+                    <li><a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a></li>
+                    <% end %>
+                </ul>
+            </div>
+            <% end %>
+
         </div>
         <% end %>
 
@@ -55,15 +64,11 @@
             <button type="submit" phx-disable-with="Saving...">Record</button>
         </div-->
 
+
+
     </form>
 
-    <!--div>
-        <ul id="results-s">
-            <%= for result <- @results do %>
-            <li><a href="#" phx-click="show_property"><%= result %></a></li>
-            <% end %>
-        </ul>
-    </div-->
+
 
 
 
