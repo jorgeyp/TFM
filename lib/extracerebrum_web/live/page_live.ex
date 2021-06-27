@@ -10,7 +10,6 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def handle_event("record", %{"triple" => triple}, socket) do
-    IO.puts("handle record")
 
 #    Engine.record(triple["s"])
     {:noreply, socket}
@@ -34,22 +33,39 @@ defmodule ExtracerebrumWeb.PageLive do
     {:noreply, socket}
   end
 
-  def handle_sub(sub, socket) do
-      IO.puts(sub)
-      case Engine.search(sub) do
-        {:ok, %Query.Result{} = queryResult} ->
-          results = queryResult.results
-          |> Enum.map(fn result ->
-            %{
-              :label => result["o"] |> RDF.Term.value,
-              :id => result["s"] |> RDF.Term.value
-            }
-          end)
-          IO.inspect(results)
-          {:noreply, assign(socket, results: results, sub: sub)}
+  @impl true
+  def handle_event("explore-s", %{"entity" => entity, "label" => label}, socket) do
+    IO.puts(entity)
+    IO.puts(label)
 
-        {:error, reason} ->
-          {:noreply, assign(socket, results: [])}
+    {:noreply, assign(socket, results: [], sub: label, active_entity_index: 1, entity: entity)}
+  end
+
+  defp is_minimum_lenght?(term) do
+    String.length(term) >= 3
+  end
+
+  def handle_sub(sub, socket) do
+      IO.puts(["Handle sub: ", sub])
+
+      if is_minimum_lenght?(sub) do
+        case Engine.searchSub(sub) do
+          {:ok, %Query.Result{} = queryResult} ->
+            results = queryResult.results
+                      |> Enum.map(fn result ->
+              %{
+                :id => result["item"] |> RDF.Term.value,
+                :label => result["itemLabel"] |> RDF.Term.value
+              }
+            end)
+            IO.inspect(results)
+            {:noreply, assign(socket, results: results, sub: sub)}
+
+          {:error, reason} ->
+            {:noreply, assign(socket, results: [])}
+        end
+      else
+        {:noreply, assign(socket, results: [], sub: sub)}
       end
     end
 
@@ -68,21 +84,45 @@ defmodule ExtracerebrumWeb.PageLive do
 #  end
 
   def handle_pred(pred, socket) do
-    IO.puts(pred)
-    {:noreply, assign(socket, results: [], pred: pred)}
+    IO.puts(["PRED: ", pred])
+
+    if is_minimum_lenght?(pred) do
+      case Engine.searchPred(pred, "") do
+        {:ok, %Query.Result{} = queryResult} ->
+          results = queryResult.results
+                    |> Enum.map(fn result ->
+            %{
+              :label => result["o"] |> RDF.Term.value,
+              :id => result["s"] |> RDF.Term.value
+            }
+          end)
+          IO.inspect(results)
+          {:noreply, assign(socket, results: results, pred: pred)}
+
+        {:error, reason} ->
+          {:noreply, assign(socket, results: [])}
+      end
+    else
+      {:noreply, assign(socket, results: [], pred: pred)}
+    end
   end
 
   def handle_obj(obj, socket) do
     IO.puts(obj)
-    case Engine.search(obj) do
-      {:ok, %Query.Result{} = rdfResults} ->
-        results = rdfResults
-                  |> Query.Result.get(:o)
-                  |> Enum.map(fn(s) -> RDF.Term.value(s) end)
 
-        {:noreply, assign(socket, results: results, obj: obj)}
-      {:error, reason} ->
-        {:noreply, assign(socket, results: [])}
+    if is_minimum_lenght?(obj) do
+      case Engine.search(obj) do
+        {:ok, %Query.Result{} = rdfResults} ->
+          results = rdfResults
+                    |> Query.Result.get(:o)
+                    |> Enum.map(fn(s) -> RDF.Term.value(s) end)
+
+          {:noreply, assign(socket, results: results, obj: obj)}
+        {:error, reason} ->
+          {:noreply, assign(socket, results: [])}
+      end
+    else
+      {:noreply, assign(socket, results: [], obj: obj)}
     end
   end
 

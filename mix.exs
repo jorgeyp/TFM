@@ -44,9 +44,9 @@ defmodule Extracerebrum.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:sparql_client, "~> 0.2.2"},
+      {:sparql_client, "~> 0.3"},
       # IMPORTANT https://rdf-elixir.dev/sparql-ex/sparql-client-configuration.html
-      {:hackney, "~> 1.15"},
+      {:hackney, "~> 1.6"},
       {:elixir_uuid, "~> 1.2"}
     ]
   end

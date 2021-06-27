@@ -32,6 +32,7 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
 
+
 // XBR
 
 let input = document.querySelector('.xbr-input');
