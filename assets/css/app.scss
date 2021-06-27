@@ -177,6 +177,10 @@
     ". .";
 }
 
+.xbr-suggestion-li {
+  list-style-type: none;
+}
+
 .xbr-suggestion {
   display: grid;
   grid-template-columns: 1fr min-content;

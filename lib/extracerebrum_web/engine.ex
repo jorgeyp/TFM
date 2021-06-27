@@ -2,7 +2,7 @@ defmodule Engine do
   @moduledoc false
 #  @endpoint "http://51.38.224.112:65001/blazegraph/sparql"
   @endpoint "https://query.wikidata.org/sparql"
-  @default_limit 10
+  @default_limit 5
   @headers %{ "User-Agent" => "XBR/0.1 (https://www.mediawiki.org/wiki/User:Jorgeyp; id+wikidata@jorgeyp.com) hackney/1.6"}
 
   def query(queryString) do
@@ -28,7 +28,7 @@ defmodule Engine do
 #    """
 
     """
-    SELECT ?item ?itemLabel WHERE {
+    SELECT ?item ?itemLabel ?itemDescription WHERE {
       SERVICE wikibase:mwapi {
         bd:serviceParam wikibase:endpoint "www.wikidata.org";
           wikibase:api "EntitySearch";
@@ -44,15 +44,23 @@ defmodule Engine do
     |> SPARQL.Client.query(@endpoint, headers: @headers)
   end
 
-  def searchPred(queryString, subject) do
+  def searchPred(queryString, item_id) do
+    IO.puts(["Search pred: ", queryString, item_id])
     """
-    PREFIX bds: <http://www.bigdata.com/rdf/search#>
-    SELECT ?p ?o
-    WHERE {
-      ?o bds:search "#{queryString}*" .
-      #{subject} ?p ?o .
+    PREFIX wikibase: <http://wikiba.se/ontology#>
+    SELECT distinct ?propertyName ?propertyLabel ?property ?itemLabel ?item ?predicateLabel ?predicate {
+      VALUES (?subject) { (wd:#{item_id}) }
+      ?subject ?predicate ?item .
+      ?property wikibase:directClaim ?predicate .
+
+      ?property rdfs:label ?propertyName .
+
+      FILTER(lang(?propertyName) = 'en')
+      FILTER regex(?propertyName, "#{queryString}", "i")
+
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } .
     }
-    LIMIT #{@default_limit}
+    LIMIT 1000
     """
     |> SPARQL.Client.query(@endpoint, headers: @headers)
   end

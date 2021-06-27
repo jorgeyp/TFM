@@ -20,9 +20,12 @@
                     <div class="xbr-suggestions-content">
                         <ul id="results-s">
                             <%= for result <- @results do %>
-                            <li class="xbr-suggestion">
-                                <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
-                                <button class="xbr-suggestion-explore" phx-click="explore-s" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
+                            <li class="xbr-suggestion-li">
+                                <div class="xbr-suggestion">
+                                    <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
+                                    <button class="xbr-suggestion-explore" phx-click="explore-s" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
+                                </div>
+                                <p><%= result[:desc] %></p>
                             </li>
                             <% end %>
                         </ul>
@@ -40,9 +43,12 @@
                     <div class="xbr-suggestions-content">
                         <ul id="results-p">
                             <%= for result <- @results do %>
-                            <li class="xbr-suggestion">
-                                <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
-                                <button class="xbr-suggestion-explore" phx-click="explore-s" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
+                            <li class="xbr-suggestion-li">
+                                <div class="xbr-suggestion">
+                                    <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
+                                    <button class="xbr-suggestion-explore" phx-click="explore-p" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
+                                </div>
+                                <p><%= result[:desc] %></p>
                             </li>
                             <% end %>
                         </ul>

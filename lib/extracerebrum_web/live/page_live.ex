@@ -35,8 +35,8 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def handle_event("explore-s", %{"entity" => entity, "label" => label}, socket) do
-    IO.puts(entity)
-    IO.puts(label)
+    IO.puts(["Entity: ", entity])
+    IO.puts(["Label: ", label])
 
     {:noreply, assign(socket, results: [], sub: label, active_entity_index: 1, entity: entity)}
   end
@@ -55,10 +55,10 @@ defmodule ExtracerebrumWeb.PageLive do
                       |> Enum.map(fn result ->
               %{
                 :id => result["item"] |> RDF.Term.value,
-                :label => result["itemLabel"] |> RDF.Term.value
+                :label => result["itemLabel"] |> RDF.Term.value,
+                :desc => result["itemDescription"] |> RDF.Term.value
               }
             end)
-            IO.inspect(results)
             {:noreply, assign(socket, results: results, sub: sub)}
 
           {:error, reason} ->
@@ -86,14 +86,18 @@ defmodule ExtracerebrumWeb.PageLive do
   def handle_pred(pred, socket) do
     IO.puts(["PRED: ", pred])
 
+    item_id = socket.assigns.entity |> String.split("/") |> List.last
+
+    IO.puts(["PRED ENTITY: ", item_id])
+
     if is_minimum_lenght?(pred) do
-      case Engine.searchPred(pred, "") do
+      case Engine.searchPred(pred, item_id) do
         {:ok, %Query.Result{} = queryResult} ->
           results = queryResult.results
                     |> Enum.map(fn result ->
             %{
-              :label => result["o"] |> RDF.Term.value,
-              :id => result["s"] |> RDF.Term.value
+              :label => result["propertyLabel"] |> RDF.Term.value,
+              :id => result["item"] |> RDF.Term.value
             }
           end)
           IO.inspect(results)
