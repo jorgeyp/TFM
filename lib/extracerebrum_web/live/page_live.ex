@@ -29,7 +29,7 @@ defmodule ExtracerebrumWeb.PageLive do
   end
 
   def handle_event("keyup", _key, socket) do
-    IO.puts("KEY")
+#    IO.puts("KEY")
     {:noreply, socket}
   end
 
@@ -39,6 +39,14 @@ defmodule ExtracerebrumWeb.PageLive do
     IO.puts(["Label: ", label])
 
     {:noreply, assign(socket, results: [], sub: label, active_entity_index: 1, entity: entity)}
+  end
+
+  @impl true
+  def handle_event("explore-p", %{"entity" => entity, "label" => label}, socket) do
+    IO.puts(["Entity: ", entity])
+    IO.puts(["Label: ", label])
+
+    {:noreply, assign(socket, results: [], sub: label, active_entity_index: 1, entity: entity, pred: "")}
   end
 
   defp is_minimum_lenght?(term) do
@@ -84,7 +92,7 @@ defmodule ExtracerebrumWeb.PageLive do
 #  end
 
   def handle_pred(pred, socket) do
-    IO.puts(["PRED: ", pred])
+    IO.puts(["Handle PRED: ", pred])
 
     item_id = socket.assigns.entity |> String.split("/") |> List.last
 
@@ -97,10 +105,12 @@ defmodule ExtracerebrumWeb.PageLive do
                     |> Enum.map(fn result ->
             %{
               :label => result["propertyLabel"] |> RDF.Term.value,
-              :id => result["item"] |> RDF.Term.value
+              :id => result["property"] |> RDF.Term.value,
+              :desc => result["propertyDescription"] |> RDF.Term.value,
+              :item_label => result["itemLabel"] |> RDF.Term.value,
+              :item_id => result["item"] |> RDF.Term.value
             }
           end)
-          IO.inspect(results)
           {:noreply, assign(socket, results: results, pred: pred)}
 
         {:error, reason} ->

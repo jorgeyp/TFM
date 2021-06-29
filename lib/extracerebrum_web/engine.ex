@@ -45,10 +45,10 @@ defmodule Engine do
   end
 
   def searchPred(queryString, item_id) do
-    IO.puts(["Search pred: ", queryString, item_id])
+    IO.puts(["Search pred: ", queryString, " ", item_id])
     """
     PREFIX wikibase: <http://wikiba.se/ontology#>
-    SELECT distinct ?propertyName ?propertyLabel ?property ?itemLabel ?item ?predicateLabel ?predicate {
+    SELECT distinct ?propertyName ?propertyLabel ?propertyDescription ?property ?itemLabel ?item ?predicateLabel ?predicate {
       VALUES (?subject) { (wd:#{item_id}) }
       ?subject ?predicate ?item .
       ?property wikibase:directClaim ?predicate .
@@ -61,6 +61,26 @@ defmodule Engine do
       SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } .
     }
     LIMIT 1000
+    """
+    |> SPARQL.Client.query(@endpoint, headers: @headers)
+  end
+
+  def suggestPred(queryString, item_id) do
+    IO.puts(["Search pred: ", queryString, item_id])
+    """
+    PREFIX wikibase: <http://wikiba.se/ontology#>
+    SELECT distinct ?propertyName ?propertyLabel ?property ?itemLabel ?item ?predicateLabel ?predicate {
+      VALUES (?subject) { (wd:#{item_id}) }
+      ?subject ?predicate ?item .
+      ?property wikibase:directClaim ?predicate .
+
+      ?property rdfs:label ?propertyName .
+
+      FILTER(lang(?propertyName) = 'en')
+
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } .
+    }
+    LIMIT 10
     """
     |> SPARQL.Client.query(@endpoint, headers: @headers)
   end

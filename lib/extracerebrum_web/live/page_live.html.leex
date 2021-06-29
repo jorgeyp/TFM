@@ -13,7 +13,7 @@
 
                 <!-- SUBJECT -->
                 <div class="">
-                    <input type="text" name="triple[s]" value="<%= @sub %>" placeholder="Type here to search items"  autocomplete="off"
+                    <input type="text" name="triple[s]" value="<%= @sub %>" placeholder="Search Wikidata items"  autocomplete="off"
                            phx-keyup="keyup" class="xbr-suggestions xbr-input <%= if String.length(@sub) > 0, do: "xbr-entity xbr-entity-s", else: "xbr-placeholder-s" %>"/>
 
                     <%= if @active_entity_index == 0 && length(@results) > 0 do %>
@@ -21,7 +21,7 @@
                         <ul id="results-s">
                             <%= for result <- @results do %>
                             <li class="xbr-suggestion-li">
-                                <div class="xbr-suggestion">
+                                <div class="xbr-suggestion xbr-suggestion-s">
                                     <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
                                     <button class="xbr-suggestion-explore" phx-click="explore-s" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
                                 </div>
@@ -36,7 +36,7 @@
                 <!-- PREDICATE -->
                 <%= if @active_entity_index > 0 do %>
                 <div class="">
-                    <input type="text" name="triple[p]" value="<%= @pred %>" placeholder="Type here to search properties" autocomplete="off"
+                    <input type="text" name="triple[p]" value="<%= @pred %>" placeholder="search properties" autocomplete="off"
                            phx-keyup="keyup" class="xbr-input <%= if String.length(@pred) > 0, do: "xbr-entity xbr-entity-p", else: "xbr-placeholder-p" %>"/>
 
                     <%= if length(@results) > 0 do %>
@@ -44,9 +44,10 @@
                         <ul id="results-p">
                             <%= for result <- @results do %>
                             <li class="xbr-suggestion-li">
-                                <div class="xbr-suggestion">
-                                    <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
-                                    <button class="xbr-suggestion-explore" phx-click="explore-p" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
+                                <div class="xbr-suggestion xbr-suggestion-p">
+                                    <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %>: </a>
+                                    <a href="<%= result[:item_id] %>"><%= result[:item_label] %></a>
+                                    <button class="xbr-suggestion-explore" phx-click="explore-p" phx-value-entity="<%= result[:item_id] %>" phx-value-label="<%= result[:item_label] %>" type="">Explore</button>
                                 </div>
                                 <p><%= result[:desc] %></p>
                             </li>
