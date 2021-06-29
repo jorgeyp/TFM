@@ -5,7 +5,7 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, results: [], sub: "", pred: "", obj: "", active_entity_index: 0)}
+    {:ok, assign(socket, results: [], path: [], sub: "", pred: "", obj: "", active_entity_index: 0, active_input: :item)}
   end
 
   @impl true
@@ -35,18 +35,34 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def handle_event("explore-s", %{"entity" => entity, "label" => label}, socket) do
-    IO.puts(["Entity: ", entity])
-    IO.puts(["Label: ", label])
+    IO.puts(["Explore item: ", entity, " ", label])
 
-    {:noreply, assign(socket, results: [], sub: label, active_entity_index: 1, entity: entity)}
+    new_path = socket.assigns.path ++ [%{entity: entity, label: label, type: :item}]
+
+    {:noreply, assign(
+      socket,
+      results: [],
+      path: new_path,
+      sub: label,
+      active_entity_index: 1,
+      active_input: :prop,
+      entity: entity
+    )}
   end
 
   @impl true
-  def handle_event("explore-p", %{"entity" => entity, "label" => label}, socket) do
-    IO.puts(["Entity: ", entity])
-    IO.puts(["Label: ", label])
+  def handle_event("explore-p",
+        %{"propid" => prop_id, "proplabel" => prop_label, "itemid" => item_id, "itemlabel" => item_label},
+        socket) do
 
-    {:noreply, assign(socket, results: [], sub: label, active_entity_index: 1, entity: entity, pred: "")}
+    IO.puts(["Explore prop: ", item_id, " ", item_label])
+
+    new_path = socket.assigns.path ++ [%{entity: prop_id, label: prop_label, type: :prop}, %{entity: item_id, label: item_label, type: :item}, ]
+
+    IO.inspect(new_path)
+    IO.inspect(socket)
+
+    {:noreply, assign(socket, results: [], path: new_path, sub: item_label, active_entity_index: 1, entity: item_id, pred: "")}
   end
 
   defp is_minimum_lenght?(term) do
@@ -101,16 +117,19 @@ defmodule ExtracerebrumWeb.PageLive do
     if is_minimum_lenght?(pred) do
       case Engine.searchPred(pred, item_id) do
         {:ok, %Query.Result{} = queryResult} ->
-          results = queryResult.results
-                    |> Enum.map(fn result ->
-            %{
-              :label => result["propertyLabel"] |> RDF.Term.value,
-              :id => result["property"] |> RDF.Term.value,
-              :desc => result["propertyDescription"] |> RDF.Term.value,
-              :item_label => result["itemLabel"] |> RDF.Term.value,
-              :item_id => result["item"] |> RDF.Term.value
-            }
-          end)
+          results =
+            queryResult.results
+            |> Enum.map(fn result ->
+              %{
+                :label => result["propertyLabel"] |> RDF.Term.value,
+                :id => result["property"] |> RDF.Term.value,
+                :desc => result["propertyDescription"] |> RDF.Term.value,
+                :item_label => result["itemLabel"] |> RDF.Term.value,
+                :item_id => result["item"] |> RDF.Term.value,
+                :i => Enum.random(0..10000)
+              }
+            end)
+
           {:noreply, assign(socket, results: results, pred: pred)}
 
         {:error, reason} ->
