@@ -51,6 +51,24 @@ defmodule ExtracerebrumWeb.PageLive do
   end
 
   @impl true
+  def handle_event("set-root", %{"entity" => entity, "label" => label}, socket) do
+    IO.puts(["Explore item: ", entity, " ", label])
+
+    new_path = [%{entity: entity, label: label, type: :item}]
+
+    {:noreply, assign(
+      socket,
+      results: [],
+      path: new_path,
+      sub: label,
+      active_entity_index: 1,
+      active_input: :prop,
+      entity: entity,
+      pred: ""
+    )}
+  end
+
+  @impl true
   def handle_event("explore-p",
         %{"propid" => prop_id, "proplabel" => prop_label, "itemid" => item_id, "itemlabel" => item_label},
         socket) do

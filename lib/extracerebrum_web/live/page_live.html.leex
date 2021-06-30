@@ -22,11 +22,6 @@
                                 <li class="xbr-suggestion-li">
                                     <div class="xbr-suggestion xbr-suggestion-s">
                                         <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
-                                        <button class="xbr-suggestion-btn xbr-btn-root"
-                                                title="set as root"
-                                                type="">
-                                            <i class="fas fa-home"></i>
-                                        </button>
                                         <button class="xbr-suggestion-btn"
                                                 title="add to path"
                                                 phx-click="explore-s"
@@ -74,6 +69,9 @@
                                     <a href="<%= result[:item_id] %>"><%= result[:item_label] %></a>
                                     <button class="xbr-suggestion-btn xbr-btn-root"
                                             title="set as root"
+                                            phx-click="set-root"
+                                            phx-value-entity="<%= result[:item_id] %>"
+                                            phx-value-label="<%= result[:item_label] %>"
                                             type="">
                                         <i class="fas fa-home"></i>
                                     </button>
