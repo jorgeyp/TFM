@@ -3,8 +3,6 @@
 
 <section>
 
-
-
     <%= f = form_for :triple, "#", phx_submit: :record, phx_change: :suggest%>
 
     <div class="xbr-bar-container">
@@ -24,7 +22,19 @@
                                 <li class="xbr-suggestion-li">
                                     <div class="xbr-suggestion xbr-suggestion-s">
                                         <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %></a>
-                                        <button class="xbr-suggestion-explore" phx-click="explore-s" phx-value-entity="<%= result[:id] %>" phx-value-label="<%= result[:label] %>" type="">Explore</button>
+                                        <button class="xbr-suggestion-btn xbr-btn-root"
+                                                title="set as root"
+                                                type="">
+                                            <i class="fas fa-home"></i>
+                                        </button>
+                                        <button class="xbr-suggestion-btn"
+                                                title="add to path"
+                                                phx-click="explore-s"
+                                                phx-value-entity="<%= result[:id] %>"
+                                                phx-value-label="<%= result[:label] %>"
+                                                type="">
+                                            <i class="fas fa-chevron-circle-right"></i>
+                                        </button>
                                     </div>
                                     <p><%= result[:desc] %></p>
                                 </li>
@@ -62,14 +72,22 @@
                                 <div class="xbr-suggestion xbr-suggestion-p">
                                     <a href="<%= result[:id] %>" phx-click="show_property"><%= result[:label] %>: </a>
                                     <a href="<%= result[:item_id] %>"><%= result[:item_label] %></a>
+                                    <button class="xbr-suggestion-btn xbr-btn-root"
+                                            title="set as root"
+                                            type="">
+                                        <i class="fas fa-home"></i>
+                                    </button>
                                     <button id="explore-btn-<%= result[:i] %>"
-                                            class="xbr-suggestion-explore"
+                                            class="xbr-suggestion-btn"
+                                            title="add to path"
                                             phx-click="explore-p"
                                             phx-value-propid="<%= result[:id] %>"
                                             phx-value-proplabel="<%= result[:label] %>"
                                             phx-value-itemid="<%= result[:item_id] %>"
                                             phx-value-itemlabel="<%= result[:item_label] %>"
-                                            type="">Explore</button>
+                                            type="">
+                                        <i class="fas fa-chevron-circle-right"></i>
+                                    </button>
                                 </div>
                                 <p><%= result[:desc] %></p>
                             </li>

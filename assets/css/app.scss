@@ -183,7 +183,7 @@
 
 .xbr-suggestion-s {
   display: grid;
-  grid-template-columns: 1fr min-content;
+  grid-template-columns: 1fr min-content min-content;
   grid-template-rows: 1fr;
   gap: 0px 10px;
   grid-auto-flow: row;
@@ -193,7 +193,7 @@
 
 .xbr-suggestion-p {
   display: grid;
-  grid-template-columns: 1fr 1fr min-content;
+  grid-template-columns: 1fr 1fr min-content min-content;
   grid-template-rows: 1fr 1fr;
   gap: 0px 10px;
   grid-template-areas:
@@ -219,13 +219,23 @@
 
 .xbr-suggestion-explore {
   display: none;
+  font-weight: bold;
+  font-size: xx-large;
 }
 
-.xbr-suggestion:hover > .xbr-suggestion-explore {
+.xbr-suggestion-btn {
+  display: none;
+  font-weight: bold;
+  font-size: x-large;
+  background-color: transparent !important;
+  border: none;
+}
+
+.xbr-suggestion:hover > .xbr-suggestion-btn {
   display: block;
   background-color: white;
   color: black;
-  padding: 3px;
+  padding: 3px 1px 9px 4px;
   margin: 0;
   line-height: 0;
   height: 2rem;
