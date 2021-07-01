@@ -5,7 +5,7 @@ defmodule ExtracerebrumWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, results: [], path: [], sub: "", pred: "", obj: "", active_entity_index: 0, active_input: :item)}
+    {:ok, assign(socket, results: [], path: [], sub: "", pred: "", obj: "", active_entity_index: 0, active_input: :item, no_results: false)}
   end
 
   @impl true
@@ -101,13 +101,17 @@ defmodule ExtracerebrumWeb.PageLive do
                 :desc => result["itemDescription"] |> RDF.Term.value
               }
             end)
-            {:noreply, assign(socket, results: results, sub: sub)}
+
+            cond do
+              length(results) != 0 -> {:noreply, assign(socket, results: results, sub: sub, no_results: false)}
+              true -> {:noreply, assign(socket, results: results, sub: sub, no_results: true)}
+            end
 
           {:error, reason} ->
             {:noreply, assign(socket, results: [])}
         end
       else
-        {:noreply, assign(socket, results: [], sub: sub)}
+        {:noreply, assign(socket, results: [], sub: sub, no_results: false)}
       end
     end
 
@@ -148,13 +152,18 @@ defmodule ExtracerebrumWeb.PageLive do
               }
             end)
 
-          {:noreply, assign(socket, results: results, pred: pred)}
+            cond do
+              length(results) != 0 -> {:noreply, assign(socket, results: results, pred: pred, no_results: false)}
+              true -> {:noreply, assign(socket, results: results, pred: pred, no_results: true)}
+            end
+
+#          {:noreply, assign(socket, results: results, pred: pred, no_results: false)}
 
         {:error, reason} ->
-          {:noreply, assign(socket, results: [])}
+          {:noreply, assign(socket, results: [], no_results: false)}
       end
     else
-      {:noreply, assign(socket, results: [], pred: pred)}
+      {:noreply, assign(socket, results: [], pred: pred, no_results: false)}
     end
   end
 

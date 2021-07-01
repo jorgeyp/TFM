@@ -15,6 +15,12 @@
                         <input type="text" name="triple[s]" value="<%= @sub %>" placeholder="Search Wikidata items"  autocomplete="off"
                                phx-keyup="keyup" class="xbr-suggestions xbr-input <%= if String.length(@sub) > 0, do: "xbr-entity xbr-entity-s", else: "xbr-placeholder-s" %>"/>
 
+                        <%= if @no_results do %>
+                        <div class="xbr-suggestions-content">
+                            <p>No results found</p>
+                        </div>
+                        <% end %>
+
                         <%= if @active_entity_index == 0 && length(@results) > 0 do %>
                         <div class="xbr-suggestions-content">
                             <ul id="results-s">
@@ -58,6 +64,12 @@
                     <input type="text" name="triple[p]" value="<%= @pred %>" placeholder="search properties" autocomplete="off"
                            phx-keyup="keyup" id="prop-input" class="xbr-input <%= if String.length(@pred) > 0, do: "xbr-entity xbr-entity-p", else: "xbr-placeholder-p" %>"
                            phx-hook="UpdateScroll"/>
+
+                    <%= if @no_results do %>
+                        <div class="xbr-suggestions-content">
+                            <p>No results found</p>
+                        </div>
+                    <% end %>
 
                     <%= if length(@results) > 0 do %>
                     <div class="xbr-suggestions-content">
